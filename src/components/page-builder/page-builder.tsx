@@ -4,6 +4,8 @@ import Side from './menu';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Board from './board';
+import Modal from '../modal/modal';
+import { AreaData } from './area';
 
 const initialLayout = {
   areas: {
@@ -51,7 +53,15 @@ const PageBuilder: React.FC<Props> = () => {
     });
   };
 
-  console.log('state', layout);
+  const handleSaveArea = (name: string, data: AreaData) => {
+    setLayout({
+      ...layout,
+      areas: {
+        ...layout.areas,
+        [name]: data.components,
+      },
+    });
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -60,8 +70,15 @@ const PageBuilder: React.FC<Props> = () => {
           <Side open={open} toggle={() => setOpen(!open)} />
         </Styled.Side>
         <Styled.Page>
-          <Board onDrop={handleDrop} layout={layout} />
+          <Board
+            onDrop={handleDrop}
+            handleSaveArea={handleSaveArea}
+            layout={layout}
+          />
           Drag your content here
+          <Modal trigger={<div>Open</div>}>
+            The Actual Content in the Modal
+          </Modal>
         </Styled.Page>
       </Styled.App>
     </DndProvider>
