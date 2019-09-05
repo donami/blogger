@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { MessageContextProvider } from './context/message-context';
+import RouterOutlet from './components/router-outlet';
+import GlobalStyle from './theme/global-style';
+import { ThemeProvider } from 'styled-components';
+import theme from './theme/default-theme';
+import { AppContextProvider } from './context/app-context';
+import { library } from '@fortawesome/fontawesome-svg-core';
+// import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faSearch, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faBell } from '@fortawesome/free-regular-svg-icons';
+
+library.add(faSearch, faBell, faSave);
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContextProvider>
+      <MessageContextProvider>
+        <ThemeProvider theme={theme}>
+          <>
+            <GlobalStyle />
+            <RouterOutlet />
+          </>
+        </ThemeProvider>
+      </MessageContextProvider>
+    </AppContextProvider>
   );
-}
+};
 
 export default App;
