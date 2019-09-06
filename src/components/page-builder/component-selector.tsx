@@ -17,6 +17,13 @@ const ComponentSelector: React.FC<Props> = () => {
           <WebComponent type='video' icon='search' />
         </Styled.ComponentSelectorListItems>
       </Styled.ComponentSelectorList>
+
+      <Styled.ComponentSelectorList>
+        <h4>Areas</h4>
+        <Styled.ComponentSelectorListItems>
+          <WebComponent type='area' icon='cube' />
+        </Styled.ComponentSelectorListItems>
+      </Styled.ComponentSelectorList>
     </Styled.ComponentSelector>
   );
 };

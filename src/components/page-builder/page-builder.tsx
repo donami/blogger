@@ -4,12 +4,15 @@ import Side from './menu';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Board from './board';
-import Modal from '../modal/modal';
-import { AreaData } from './area';
+import { DraggableItem } from './item-types';
+import { Layout, AreaType } from './types';
 
-const initialLayout = {
+const initialLayout: Layout = {
   areas: {
     top: {
+      layout: {
+        width: 12,
+      },
       components: [
         {
           component: 'banner',
@@ -21,6 +24,9 @@ const initialLayout = {
       ],
     },
     bottom: {
+      layout: {
+        width: 12,
+      },
       components: [],
     },
   },
@@ -31,34 +37,75 @@ const PageBuilder: React.FC<Props> = () => {
   const [open, setOpen] = useState(true);
   const [layout, setLayout] = useState<any>(initialLayout);
 
-  const handleDrop = (item: any, area: any) => {
-    console.log('handleDrop', item, area);
+  const handleDrop = (item: DraggableItem, area: any) => {
+    if (item.componentType === 'area') {
+      setLayout({
+        ...layout,
+        areas: {
+          ...layout.areas,
+          untitled: {
+            name: 'untitled-area',
+            components: [],
+            layout: {
+              width: 12,
+            },
+          },
+        },
+      });
+    } else {
+      setLayout({
+        ...layout,
+        areas: {
+          ...layout.areas,
+          [area.name]: {
+            ...layout.areas[area.name],
+            components: [
+              ...layout.areas[area.name].components,
+              {
+                component: item.componentType,
+                layout: {
+                  width: 12,
+                },
+                settings: {},
+              },
+            ],
+          },
+        },
+      });
+    }
+  };
+
+  const handleSaveArea = (name: string, data: AreaType) => {
     setLayout({
       ...layout,
       areas: {
         ...layout.areas,
-        [area.name]: {
-          components: [
-            ...layout.areas[area.name].components,
-            {
-              component: item.componentType,
-              layout: {
-                width: 12,
-              },
-              settings: {},
-            },
-          ],
+        [name]: {
+          ...layout.areas[name],
+          components: data.components,
         },
       },
     });
   };
 
-  const handleSaveArea = (name: string, data: AreaData) => {
+  const handleAreaChange = (
+    name: string,
+    change: {
+      property: string;
+      value: string | number;
+    }
+  ) => {
     setLayout({
       ...layout,
       areas: {
         ...layout.areas,
-        [name]: data.components,
+        [name]: {
+          ...layout.areas[name],
+          layout: {
+            ...layout.areas[name].layout,
+            [change.property]: change.value,
+          },
+        },
       },
     });
   };
@@ -71,14 +118,11 @@ const PageBuilder: React.FC<Props> = () => {
         </Styled.Side>
         <Styled.Page>
           <Board
+            handleAreaChange={handleAreaChange}
             onDrop={handleDrop}
             handleSaveArea={handleSaveArea}
             layout={layout}
           />
-          Drag your content here
-          <Modal trigger={<div>Open</div>}>
-            The Actual Content in the Modal
-          </Modal>
         </Styled.Page>
       </Styled.App>
     </DndProvider>

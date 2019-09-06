@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ItemTypes from './item-types';
 import { useDrop } from 'react-dnd';
 import styled from 'styled-components/macro';
 import { capitalize } from '../../utils';
 import Modal from '../modal/modal';
+import Icon from '../icon/icon';
+import { AreaType } from './types';
 
-export type AreaData = {
-  components: any[];
-};
 type Props = {
   onDrop: any;
   name: string;
-  handleSave: (name: string, data: AreaData) => void;
-  data: AreaData;
+  handleSave: (name: string, data: AreaType) => void;
+  data: AreaType;
+  onAreaLayoutChange: (
+    name: string,
+    change: {
+      property: string;
+      value: string | number;
+    }
+  ) => void;
 };
-const Area: React.FC<Props> = ({ onDrop, name, data, handleSave }) => {
+const Area: React.FC<Props> = ({
+  onDrop,
+  name,
+  data,
+  handleSave,
+  onAreaLayoutChange,
+}) => {
   const [components, setComponents] = useState(data.components);
+
+  useEffect(() => {
+    setComponents(data.components);
+  }, [data]);
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.WebComponent,
@@ -57,21 +73,65 @@ const Area: React.FC<Props> = ({ onDrop, name, data, handleSave }) => {
     ]);
   };
 
+  const handleAreaLayoutChange = (change: {
+    property: string;
+    value: string | number;
+  }) => {
+    onAreaLayoutChange(name, change);
+  };
+
   return (
-    <StyledArea ref={drop}>
+    <StyledArea ref={drop} layoutWidth={data.layout.width || 12}>
+      <Modal
+        trigger={
+          <EditBtn>
+            <Icon icon={['far', 'edit']} />
+          </EditBtn>
+        }
+      >
+        <h4>Component Settings</h4>
+        <div>
+          Text in bold: <input type='checkbox' />
+          {Object.keys(data.layout).map(key => {
+            return (
+              <div key={key}>
+                <strong>{capitalize(key)}:</strong>{' '}
+                <input
+                  type='text'
+                  defaultValue={(data.layout as any)[key]}
+                  onChange={(e: any) =>
+                    handleAreaLayoutChange({
+                      property: key,
+                      value: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+        {/* <button onClick={() => handleSaveComponent(index)}>Save</button> */}
+      </Modal>
+
       {components.map((component: any, index: number) => {
         return (
-          <GuiComponent key={index}>
-            <Modal trigger={<EditComponentBtn>Edit</EditComponentBtn>}>
+          <GuiComponent layoutWidth={component.layout.width} key={index}>
+            <Modal
+              trigger={
+                <EditBtn>
+                  <Icon icon={['far', 'edit']} />
+                </EditBtn>
+              }
+            >
               <h4>Component Settings</h4>
               <div>
-                Text in bold: <input type="checkbox" />
+                Text in bold: <input type='checkbox' />
                 {Object.keys(component.layout).map(key => {
                   return (
                     <div key={key}>
                       <strong>{capitalize(key)}:</strong>{' '}
                       <input
-                        type="text"
+                        type='text'
                         defaultValue={component.layout[key]}
                         onChange={(e: any) =>
                           handleChange(index, {
@@ -95,27 +155,44 @@ const Area: React.FC<Props> = ({ onDrop, name, data, handleSave }) => {
   );
 };
 
-const StyledArea = styled.div`
-  border: purple 1px solid;
+const StyledArea = styled.div<{ layoutWidth: number }>`
+  border: #555 1px solid;
   transition: all 0.3s ease-in-out;
+  grid-column-start: ${p => p.layoutWidth} span;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding: ${p => p.theme.spacing.large};
+  position: relative;
 
   &:hover {
     background: #ccc;
   }
 `;
 
-const GuiComponent = styled.div`
-  background: blue;
-  color: #fff;
+const GuiComponent = styled.div<{ layoutWidth?: number }>`
+  border: #ccc 1px dashed;
+  color: #555;
   padding: 15px;
   text-align: center;
   position: relative;
+  grid-column-start: ${p => p.layoutWidth || 12} span;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: 300;
 `;
 
-const EditComponentBtn = styled.span`
+const EditBtn = styled.span`
   position: absolute;
   top: 0;
   right: 0;
+  padding: ${p => p.theme.spacing.small};
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export default Area;

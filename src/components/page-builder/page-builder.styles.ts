@@ -92,7 +92,9 @@ const Expand = styled.div`
 `;
 
 const ComponentSelector = styled.div``;
-const ComponentSelectorList = styled.div``;
+const ComponentSelectorList = styled.div`
+  margin-bottom: ${p => p.theme.spacing.large};
+`;
 const ComponentSelectorListItems = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
