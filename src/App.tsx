@@ -7,10 +7,24 @@ import theme from './theme/default-theme';
 import { AppContextProvider } from './context/app-context';
 import { library } from '@fortawesome/fontawesome-svg-core';
 // import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faSearch, faSave, faCube } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSearch,
+  faSave,
+  faCube,
+  faArrowCircleLeft,
+  faArrowCircleRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEdit } from '@fortawesome/free-regular-svg-icons';
 
-library.add(faSearch, faBell, faSave, faCube, faEdit);
+library.add(
+  faSearch,
+  faBell,
+  faSave,
+  faCube,
+  faEdit,
+  faArrowCircleLeft,
+  faArrowCircleRight
+);
 
 const App: React.FC = () => {
   return (

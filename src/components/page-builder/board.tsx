@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import Area from './area';
-import { AreaType } from './types';
+import { AreaType, Layout } from './types';
 
 type Props = {
   onDrop: any;
-  layout: any;
+  currentView: string;
+  layout: Layout;
   handleSaveArea: (name: string, data: AreaType) => void;
   handleAreaChange: (
     name: string,
@@ -18,24 +19,48 @@ type Props = {
 
 const Board: React.FC<Props> = ({
   onDrop,
+  currentView,
   layout,
   handleSaveArea,
   handleAreaChange,
 }) => {
+  const view = layout.views.find(view => view.name === currentView);
+
   return (
     <StyledBoard>
-      {Object.keys(layout.areas).map(key => {
-        return (
-          <Area
-            name={key}
-            onAreaLayoutChange={handleAreaChange}
-            data={layout.areas[key]}
-            key={key}
-            handleSave={handleSaveArea}
-            onDrop={onDrop}
-          />
-        );
-      })}
+      {layout.areas.top && (
+        <Area
+          name='top'
+          onAreaLayoutChange={handleAreaChange}
+          data={layout.areas.top}
+          handleSave={handleSaveArea}
+          onDrop={onDrop}
+        />
+      )}
+
+      {view &&
+        Object.keys(view.areas).map(key => {
+          return (
+            <Area
+              name={key}
+              onAreaLayoutChange={handleAreaChange}
+              data={view.areas[key]}
+              key={key}
+              handleSave={handleSaveArea}
+              onDrop={onDrop}
+            />
+          );
+        })}
+
+      {layout.areas.bottom && (
+        <Area
+          name='bottom'
+          onAreaLayoutChange={handleAreaChange}
+          data={layout.areas.bottom}
+          handleSave={handleSaveArea}
+          onDrop={onDrop}
+        />
+      )}
     </StyledBoard>
   );
 };

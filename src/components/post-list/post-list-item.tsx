@@ -9,7 +9,7 @@ type Props = {
   };
 };
 const PostListItem: React.FC<Props> = ({ dataId, data }) => {
-  const { title, content } = data;
+  const { title } = data;
   return (
     <div>
       <Link to={`/post/${dataId}`}>{title}</Link>

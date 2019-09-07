@@ -13,6 +13,13 @@ export type AreaType = {
   components: ComponentConfig[];
 };
 
+export type ViewType = {
+  name: string;
+  path: string;
+  areas: { [key: string]: AreaType };
+};
+
 export type Layout = {
   areas: { [key: string]: AreaType };
+  views: ViewType[];
 };

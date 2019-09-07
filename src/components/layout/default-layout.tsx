@@ -21,7 +21,7 @@ const DefaultLayout: React.FC<Props> = ({ children }) => {
           <ProfileImage>
             <img
               src='https://dq1eylutsoz4u.cloudfront.net/2017/10/06151308/short-dating-profile-examples.jpg'
-              alt='Profile image'
+              alt='Profile'
             />
           </ProfileImage>
         </TopMenu>

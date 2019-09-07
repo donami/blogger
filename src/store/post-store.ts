@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 import { db } from '../fire';
-import { Post, CreatePostInput } from '../models/interfaces';
+import { CreatePostInput } from '../models/interfaces';
 
 class PostStore {
   @observable posts: any = [];

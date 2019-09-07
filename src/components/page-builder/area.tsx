@@ -31,7 +31,7 @@ const Area: React.FC<Props> = ({
 
   useEffect(() => {
     setComponents(data.components);
-  }, [data]);
+  }, [data, data.components]);
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.WebComponent,
@@ -82,6 +82,7 @@ const Area: React.FC<Props> = ({
 
   return (
     <StyledArea ref={drop} layoutWidth={data.layout.width || 12}>
+      <AreaDescription>{capitalize(name)}</AreaDescription>
       <Modal
         trigger={
           <EditBtn>
@@ -110,7 +111,7 @@ const Area: React.FC<Props> = ({
             );
           })}
         </div>
-        {/* <button onClick={() => handleSaveComponent(index)}>Save</button> */}
+        <button>Save</button>
       </Modal>
 
       {components.map((component: any, index: number) => {
@@ -167,6 +168,15 @@ const StyledArea = styled.div<{ layoutWidth: number }>`
   &:hover {
     background: #ccc;
   }
+`;
+
+const AreaDescription = styled.span`
+  position: absolute;
+  top: 0;
+  text-transform: uppercase;
+  font-weight: 300;
+  left: ${p => p.theme.spacing.large};
+  padding: ${p => p.theme.spacing.small} 0;
 `;
 
 const GuiComponent = styled.div<{ layoutWidth?: number }>`

@@ -10,7 +10,9 @@ type Props = {
 const Menu: React.FC<Props> = ({ open, toggle }) => {
   return (
     <Styled.Menu>
-      <Styled.Expand onClick={toggle}>Expand</Styled.Expand>
+      <Styled.Expand onClick={toggle}>
+        <Icon icon={open ? 'arrow-circle-left' : 'arrow-circle-right'} />
+      </Styled.Expand>
       <Styled.MenuContent>
         <Styled.MainMenu>
           <div>

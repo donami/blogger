@@ -89,6 +89,12 @@ const Expand = styled.div`
   top: 0;
   left: ${mainMenuWidth};
   background-color: #35353a;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 const ComponentSelector = styled.div``;
