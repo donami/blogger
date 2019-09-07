@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ItemTypes from './item-types';
 import { useDrop } from 'react-dnd';
 import styled from 'styled-components/macro';
@@ -6,32 +6,19 @@ import { capitalize } from '../../utils';
 import Modal from '../modal/modal';
 import Icon from '../icon/icon';
 import { AreaType } from './types';
+import { BuilderContext } from './builder-context';
+import { observer } from 'mobx-react';
+import { BuilderStore } from '../../store/builder-store';
 
 type Props = {
   onDrop: any;
   name: string;
-  handleSave: (name: string, data: AreaType) => void;
   data: AreaType;
-  onAreaLayoutChange: (
-    name: string,
-    change: {
-      property: string;
-      value: string | number;
-    }
-  ) => void;
 };
-const Area: React.FC<Props> = ({
-  onDrop,
-  name,
-  data,
-  handleSave,
-  onAreaLayoutChange,
-}) => {
-  const [components, setComponents] = useState(data.components);
+const Area: React.FC<Props> = ({ onDrop, name, data }) => {
+  const store: BuilderStore = useContext(BuilderContext);
 
-  useEffect(() => {
-    setComponents(data.components);
-  }, [data, data.components]);
+  const { components } = data;
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.WebComponent,
@@ -44,12 +31,7 @@ const Area: React.FC<Props> = ({
     }),
   });
 
-  const handleSaveComponent = (index: number) => {
-    handleSave(name, {
-      ...data,
-      components,
-    });
-  };
+  const handleSaveComponent = (index: number) => {};
 
   const handleChange = (
     componentIndex: number,
@@ -59,25 +41,19 @@ const Area: React.FC<Props> = ({
       value: string | number;
     }
   ) => {
-    const component = {
-      ...components[componentIndex],
-      [change.type]: {
-        ...components[componentIndex][change.type],
-        [change.property]: change.value,
-      },
-    };
-    setComponents([
-      ...components.slice(0, componentIndex),
-      component,
-      ...components.slice(componentIndex + 1),
-    ]);
+    store.updateComponent(name, componentIndex, change);
   };
 
   const handleAreaLayoutChange = (change: {
     property: string;
     value: string | number;
+    type: 'layout';
   }) => {
-    onAreaLayoutChange(name, change);
+    store.updateArea(name, change);
+  };
+
+  const handleRemoveArea = () => {
+    store.removeArea(name);
   };
 
   return (
@@ -90,7 +66,7 @@ const Area: React.FC<Props> = ({
           </EditBtn>
         }
       >
-        <h4>Component Settings</h4>
+        <h4>Area Settings</h4>
         <div>
           Text in bold: <input type='checkbox' />
           {Object.keys(data.layout).map(key => {
@@ -104,6 +80,7 @@ const Area: React.FC<Props> = ({
                     handleAreaLayoutChange({
                       property: key,
                       value: e.target.value,
+                      type: 'layout',
                     })
                   }
                 />
@@ -112,6 +89,7 @@ const Area: React.FC<Props> = ({
           })}
         </div>
         <button>Save</button>
+        <button onClick={() => handleRemoveArea()}>Remove area</button>
       </Modal>
 
       {components.map((component: any, index: number) => {
@@ -205,4 +183,4 @@ const EditBtn = styled.span`
   }
 `;
 
-export default Area;
+export default observer(Area);

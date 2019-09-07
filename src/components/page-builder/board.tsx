@@ -7,59 +7,26 @@ type Props = {
   onDrop: any;
   currentView: string;
   layout: Layout;
-  handleSaveArea: (name: string, data: AreaType) => void;
-  handleAreaChange: (
-    name: string,
-    change: {
-      property: string;
-      value: string | number;
-    }
-  ) => void;
 };
 
-const Board: React.FC<Props> = ({
-  onDrop,
-  currentView,
-  layout,
-  handleSaveArea,
-  handleAreaChange,
-}) => {
+const Board: React.FC<Props> = ({ onDrop, currentView, layout }) => {
   const view = layout.views.find(view => view.name === currentView);
 
   return (
     <StyledBoard>
       {layout.areas.top && (
-        <Area
-          name='top'
-          onAreaLayoutChange={handleAreaChange}
-          data={layout.areas.top}
-          handleSave={handleSaveArea}
-          onDrop={onDrop}
-        />
+        <Area name='top' data={layout.areas.top} onDrop={onDrop} />
       )}
 
       {view &&
         Object.keys(view.areas).map(key => {
           return (
-            <Area
-              name={key}
-              onAreaLayoutChange={handleAreaChange}
-              data={view.areas[key]}
-              key={key}
-              handleSave={handleSaveArea}
-              onDrop={onDrop}
-            />
+            <Area name={key} data={view.areas[key]} key={key} onDrop={onDrop} />
           );
         })}
 
       {layout.areas.bottom && (
-        <Area
-          name='bottom'
-          onAreaLayoutChange={handleAreaChange}
-          data={layout.areas.bottom}
-          handleSave={handleSaveArea}
-          onDrop={onDrop}
-        />
+        <Area name='bottom' data={layout.areas.bottom} onDrop={onDrop} />
       )}
     </StyledBoard>
   );
