@@ -1,5 +1,6 @@
 enum ItemTypes {
   WebComponent = 'WebComponent',
+  Area = 'Area',
 }
 
 export type DraggableItem = {

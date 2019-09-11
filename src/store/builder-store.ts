@@ -295,6 +295,19 @@ export class BuilderStore {
     };
   }
 
+  @action.bound
+  moveArea(viewName: string, areas: string[]) {
+    this.views = this.views.map(view => {
+      if (view.name === viewName) {
+        return {
+          ...view,
+          areas,
+        };
+      }
+      return view;
+    });
+  }
+
   @computed get layout() {
     return {
       theme: initialLayout.theme,

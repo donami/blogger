@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ItemTypes from './item-types';
-import { useDrop } from 'react-dnd';
+import { useDrop, useDrag } from 'react-dnd';
 import styled from 'styled-components/macro';
 import { capitalize } from '../../utils';
 import Modal from '../modal/modal';
@@ -14,16 +14,29 @@ type Props = {
   onDrop: any;
   name: string;
   data: AreaType;
+  onMoveArea?: any;
 };
-const Area: React.FC<Props> = ({ onDrop, name, data }) => {
+const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
   const store: BuilderStore = useContext(BuilderContext);
+  const ref = React.useRef(null);
+
+  const [{ opacity }, dragRef] = useDrag({
+    item: { type: ItemTypes.Area, areaName: name },
+    collect: monitor => ({
+      opacity: monitor.isDragging() ? 0.5 : 1,
+    }),
+  });
 
   const { components, removable } = data;
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: ItemTypes.WebComponent,
+    accept: [ItemTypes.WebComponent, ItemTypes.Area],
     drop: item => {
-      onDrop(item, { name });
+      if (item.type === ItemTypes.WebComponent) {
+        onDrop(item, { name });
+      } else if (item.type === ItemTypes.Area) {
+        onMoveArea && onMoveArea(item, { name });
+      }
     },
     collect: monitor => ({
       isOver: !!monitor.isOver(),
@@ -56,8 +69,10 @@ const Area: React.FC<Props> = ({ onDrop, name, data }) => {
     store.removeArea(name);
   };
 
+  dragRef(drop(ref));
+
   return (
-    <StyledArea ref={drop} layoutWidth={data.layout.width || 12}>
+    <StyledArea ref={ref} layoutWidth={data.layout.width || 12}>
       <AreaDescription>{capitalize(name)}</AreaDescription>
       <Modal
         trigger={
@@ -68,13 +83,13 @@ const Area: React.FC<Props> = ({ onDrop, name, data }) => {
       >
         <h4>Area Settings</h4>
         <div>
-          Text in bold: <input type='checkbox' />
+          Text in bold: <input type="checkbox" />
           {Object.keys(data.layout).map(key => {
             return (
               <div key={key}>
                 <strong>{capitalize(key)}:</strong>{' '}
                 <input
-                  type='text'
+                  type="text"
                   defaultValue={(data.layout as any)[key]}
                   onChange={(e: any) =>
                     handleAreaLayoutChange({
