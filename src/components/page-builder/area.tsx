@@ -18,7 +18,7 @@ type Props = {
 const Area: React.FC<Props> = ({ onDrop, name, data }) => {
   const store: BuilderStore = useContext(BuilderContext);
 
-  const { components } = data;
+  const { components, removable } = data;
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.WebComponent,
@@ -89,7 +89,9 @@ const Area: React.FC<Props> = ({ onDrop, name, data }) => {
           })}
         </div>
         <button>Save</button>
-        <button onClick={() => handleRemoveArea()}>Remove area</button>
+        {removable && (
+          <button onClick={() => handleRemoveArea()}>Remove area</button>
+        )}
       </Modal>
 
       {components.map((component: any, index: number) => {

@@ -8,11 +8,18 @@ import {
 
 const computedInitialLayout: Layout = {
   // TODO: remove
+  theme: {
+    colors: {
+      primary: '#0074D9',
+    },
+    pageWidth: '1024px',
+  },
   areas: {
     top: {
       layout: {
         width: 12,
       },
+      removable: false,
       components: [
         {
           component: 'banner',
@@ -27,6 +34,7 @@ const computedInitialLayout: Layout = {
       layout: {
         width: 12,
       },
+      removable: false,
       components: [],
     },
   },
@@ -39,6 +47,7 @@ const computedInitialLayout: Layout = {
           layout: {
             width: 12,
           },
+          removable: false,
           components: [
             {
               component: 'banner',
@@ -59,6 +68,7 @@ const computedInitialLayout: Layout = {
           layout: {
             width: 12,
           },
+          removable: false,
           components: [
             {
               component: 'video',
@@ -82,11 +92,18 @@ type FlatLayout = Omit<Layout, 'views'> & {
 };
 
 const initialLayout: FlatLayout = {
+  theme: {
+    colors: {
+      primary: '#0074D9',
+    },
+    pageWidth: '1024px',
+  },
   areas: {
     top: {
       layout: {
         width: 12,
       },
+      removable: false,
       components: [
         {
           component: 'banner',
@@ -101,26 +118,21 @@ const initialLayout: FlatLayout = {
       layout: {
         width: 12,
       },
+      removable: false,
       components: [],
     },
     home_main: {
       layout: {
         width: 12,
       },
-      components: [
-        {
-          component: 'banner',
-          layout: {
-            width: 12,
-          },
-          settings: {},
-        },
-      ],
+      removable: false,
+      components: [],
     },
     about_main: {
       layout: {
         width: 12,
       },
+      removable: false,
       components: [
         {
           component: 'video',
@@ -146,21 +158,40 @@ const initialLayout: FlatLayout = {
   ],
 };
 
+const handleDuplicate = (name: string) => {
+  if (name.match(/-[0-9]*$/)) {
+    return name.replace(/-([0-9]*)$/, n => {
+      let num = +n.substr(1);
+      return `-${num + 1}`;
+    });
+  }
+  return `${name}-1`;
+};
+
+const generateName: any = (name: string, areas: { [key: string]: any }) => {
+  if (areas[name]) {
+    const newName = handleDuplicate(name);
+    return generateName(newName, areas);
+  }
+  return name;
+};
+
 export class BuilderStore {
-  // @observable layout: Layout = initialLayout;
   @observable views: FlatViewType[] = initialLayout.views;
   @observable areas: { [key: string]: AreaType } = initialLayout.areas;
 
   @action.bound
   addArea(areaName: string, area: AreaType, viewName: string) {
-    this.areas[areaName] = area;
+    let newAreaName = generateName(areaName, this.areas);
+
+    this.areas[newAreaName] = area;
     if (viewName) {
       const view = this.views.find(v => v.name === viewName);
 
       if (view) {
         this.views = this.views.map(view => {
           if (view.name === viewName) {
-            view.areas = view.areas.concat(areaName);
+            view.areas = view.areas.concat(newAreaName);
           }
           return view;
         });
@@ -182,7 +213,13 @@ export class BuilderStore {
   @action.bound
   removeArea(areaName: string) {
     // Should not be possible to remove top or bottom
-    if (['top', 'bottom'].indexOf(areaName) > -1) {
+    // Remove this? No longer needed due to removable property on area?
+    // if (['top', 'bottom'].indexOf(areaName) > -1) {
+    //   return;
+    // }
+
+    const area = this.areas[areaName];
+    if (!area || !area.removable) {
       return;
     }
 
@@ -260,6 +297,7 @@ export class BuilderStore {
 
   @computed get layout() {
     return {
+      theme: initialLayout.theme,
       views: this.views.map(view => {
         return {
           ...view,

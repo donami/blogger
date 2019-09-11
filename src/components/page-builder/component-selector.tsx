@@ -10,11 +10,11 @@ const ComponentSelector: React.FC<Props> = () => {
         <h4>Default Addons</h4>
         <Styled.ComponentSelectorListItems>
           <WebComponent type='accordion' icon='search' />
-          <WebComponent type='button' icon='search' />
-          <WebComponent type='icon' icon='search' />
-          <WebComponent type='image' icon='search' />
           <WebComponent type='banner' icon='search' />
-          <WebComponent type='video' icon='search' />
+          <WebComponent type='social' icon='search' />
+          <WebComponent type='tag-cloud' icon='search' />
+          <WebComponent type='category-list' icon='search' />
+          <WebComponent type='article-list' icon='search' />
         </Styled.ComponentSelectorListItems>
       </Styled.ComponentSelectorList>
 

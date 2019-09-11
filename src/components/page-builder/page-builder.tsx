@@ -91,9 +91,10 @@ const PageBuilder: React.FC<Props> = ({ store }) => {
     if (item.componentType === 'area') {
       if (['top', 'bottom'].indexOf(area.name) === -1) {
         store.addArea(
-          'untitled',
+          'untitled-1',
           {
             components: [],
+            removable: true,
             layout: {
               width: 12,
             },

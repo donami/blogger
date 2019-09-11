@@ -10,6 +10,7 @@ export type ComponentConfig = {
 
 export type AreaType = {
   layout: LayoutConfig;
+  removable: boolean;
   components: ComponentConfig[];
 };
 
@@ -19,7 +20,15 @@ export type ViewType = {
   areas: { [key: string]: AreaType };
 };
 
+export type ThemeConfig = {
+  colors: {
+    primary: string;
+  };
+  pageWidth: string;
+};
+
 export type Layout = {
+  theme: ThemeConfig;
   areas: { [key: string]: AreaType };
   views: ViewType[];
 };
