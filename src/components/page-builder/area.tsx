@@ -18,6 +18,7 @@ type Props = {
 };
 const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
   const store: BuilderStore = useContext(BuilderContext);
+  const [newName, setNewName] = useState(name);
   const ref = React.useRef(null);
 
   const [{ opacity }, dragRef] = useDrag({
@@ -83,13 +84,29 @@ const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
       >
         <h4>Area Settings</h4>
         <div>
-          Text in bold: <input type="checkbox" />
+          Area name:
+          <input
+            defaultValue={newName}
+            onChange={(e: any) => {
+              setNewName(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              store.updateAreaName(name, newName);
+            }}
+          >
+            Change
+          </button>
+        </div>
+        <div>
+          Text in bold: <input type='checkbox' />
           {Object.keys(data.layout).map(key => {
             return (
               <div key={key}>
                 <strong>{capitalize(key)}:</strong>{' '}
                 <input
-                  type="text"
+                  type='text'
                   defaultValue={(data.layout as any)[key]}
                   onChange={(e: any) =>
                     handleAreaLayoutChange({

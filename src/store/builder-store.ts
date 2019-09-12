@@ -243,7 +243,6 @@ export class BuilderStore {
       },
       {}
     );
-    console.log(areas);
   }
 
   @action.bound
@@ -265,6 +264,36 @@ export class BuilderStore {
         },
       },
     };
+  }
+
+  @action.bound
+  updateAreaName(areaName: string, newName: string) {
+    this.areas = Object.keys(this.areas).reduce<{ [key: string]: AreaType }>(
+      (acc, name) => {
+        if (name === areaName) {
+          acc[newName] = this.areas[name];
+        } else {
+          acc[name] = this.areas[name];
+        }
+        return acc;
+      },
+      {}
+    );
+
+    this.views = this.views.map(view => {
+      if (view.areas.indexOf(areaName) > -1) {
+        return {
+          ...view,
+          areas: view.areas.map(name => {
+            if (name === areaName) {
+              return newName;
+            }
+            return name;
+          }),
+        };
+      }
+      return view;
+    });
   }
 
   @action.bound
