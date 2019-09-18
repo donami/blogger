@@ -49,14 +49,20 @@ const MainMenu = styled.div`
     margin-bottom: ${p => p.theme.spacing.normal};
   }
 `;
-const BottomActions = styled.div`
+const BottomActions = styled.div``;
+
+const BottomAction = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 0.9em;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  margin-bottom: ${p => p.theme.spacing.normal};
 
+  &:last-child {
+    margin-bottom: 0;
+  }
   span,
   i,
   svg {
@@ -68,6 +74,7 @@ const BottomActions = styled.div`
     color: #fff;
   }
 `;
+
 const Tools = styled.div`
   flex: 1;
   background: purple;
@@ -131,6 +138,32 @@ const ComponentSelectorListItem = styled.div`
   }
 `;
 
+const GuiComponent = styled.div<{ layoutWidth?: number }>`
+  border: #ccc 1px dashed;
+  color: #555;
+  padding: 15px;
+  text-align: center;
+  position: relative;
+  grid-column-start: ${p => p.layoutWidth || 12} span;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-weight: 300;
+`;
+
+const EditBtn = styled.span`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: ${p => p.theme.spacing.small};
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
 export const Styled = {
   App,
   Side,
@@ -139,10 +172,13 @@ export const Styled = {
   MenuContent,
   MainMenu,
   BottomActions,
+  BottomAction,
   Tools,
   Expand,
   ComponentSelector,
   ComponentSelectorList,
   ComponentSelectorListItems,
   ComponentSelectorListItem,
+  GuiComponent,
+  EditBtn,
 };

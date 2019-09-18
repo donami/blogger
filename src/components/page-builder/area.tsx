@@ -9,6 +9,8 @@ import { AreaType } from './types';
 import { BuilderContext } from './builder-context';
 import { observer } from 'mobx-react';
 import { BuilderStore } from '../../store/builder-store';
+import GuiComponent from './gui-component';
+import { Styled } from './page-builder.styles';
 
 type Props = {
   onDrop: any;
@@ -45,19 +47,6 @@ const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
     }),
   });
 
-  const handleSaveComponent = (index: number) => {};
-
-  const handleChange = (
-    componentIndex: number,
-    change: {
-      type: 'layout' | 'settings';
-      property: string;
-      value: string | number;
-    }
-  ) => {
-    store.updateComponent(name, componentIndex, change);
-  };
-
   const handleAreaLayoutChange = (change: {
     property: string;
     value: string | number;
@@ -77,9 +66,9 @@ const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
       <AreaDescription>{capitalize(name)}</AreaDescription>
       <Modal
         trigger={
-          <EditBtn>
+          <Styled.EditBtn>
             <Icon icon={['far', 'edit']} />
-          </EditBtn>
+          </Styled.EditBtn>
         }
       >
         <h4>Area Settings</h4>
@@ -128,40 +117,12 @@ const Area: React.FC<Props> = ({ onDrop, onMoveArea, name, data }) => {
 
       {components.map((component: any, index: number) => {
         return (
-          <GuiComponent layoutWidth={component.layout.width} key={index}>
-            <Modal
-              trigger={
-                <EditBtn>
-                  <Icon icon={['far', 'edit']} />
-                </EditBtn>
-              }
-            >
-              <h4>Component Settings</h4>
-              <div>
-                Text in bold: <input type='checkbox' />
-                {Object.keys(component.layout).map(key => {
-                  return (
-                    <div key={key}>
-                      <strong>{capitalize(key)}:</strong>{' '}
-                      <input
-                        type='text'
-                        defaultValue={component.layout[key]}
-                        onChange={(e: any) =>
-                          handleChange(index, {
-                            type: 'layout',
-                            property: key,
-                            value: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              <button onClick={() => handleSaveComponent(index)}>Save</button>
-            </Modal>
-            {capitalize(component.component)}
-          </GuiComponent>
+          <GuiComponent
+            component={component}
+            index={index}
+            areaName={name}
+            key={index}
+          />
         );
       })}
     </StyledArea>
@@ -189,32 +150,6 @@ const AreaDescription = styled.span`
   font-weight: 300;
   left: ${p => p.theme.spacing.large};
   padding: ${p => p.theme.spacing.small} 0;
-`;
-
-const GuiComponent = styled.div<{ layoutWidth?: number }>`
-  border: #ccc 1px dashed;
-  color: #555;
-  padding: 15px;
-  text-align: center;
-  position: relative;
-  grid-column-start: ${p => p.layoutWidth || 12} span;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  font-weight: 300;
-`;
-
-const EditBtn = styled.span`
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: ${p => p.theme.spacing.small};
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
 `;
 
 export default observer(Area);

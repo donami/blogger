@@ -11,6 +11,7 @@ import {
   faSearch,
   faSave,
   faCube,
+  faTrash,
   faArrowCircleLeft,
   faArrowCircleRight,
 } from '@fortawesome/free-solid-svg-icons';
@@ -20,6 +21,7 @@ library.add(
   faSearch,
   faBell,
   faSave,
+  faTrash,
   faCube,
   faEdit,
   faArrowCircleLeft,

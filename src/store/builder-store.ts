@@ -6,83 +6,83 @@ import {
   ComponentConfig,
 } from '../components/page-builder/types';
 
-const computedInitialLayout: Layout = {
-  // TODO: remove
-  theme: {
-    colors: {
-      primary: '#0074D9',
-    },
-    pageWidth: '1024px',
-  },
-  areas: {
-    top: {
-      layout: {
-        width: 12,
-      },
-      removable: false,
-      components: [
-        {
-          component: 'banner',
-          layout: {
-            width: 12,
-          },
-          settings: {},
-        },
-      ],
-    },
-    bottom: {
-      layout: {
-        width: 12,
-      },
-      removable: false,
-      components: [],
-    },
-  },
-  views: [
-    {
-      name: 'home',
-      path: '/',
-      areas: {
-        main: {
-          layout: {
-            width: 12,
-          },
-          removable: false,
-          components: [
-            {
-              component: 'banner',
-              layout: {
-                width: 12,
-              },
-              settings: {},
-            },
-          ],
-        },
-      },
-    },
-    {
-      name: 'about',
-      path: '/',
-      areas: {
-        main: {
-          layout: {
-            width: 12,
-          },
-          removable: false,
-          components: [
-            {
-              component: 'video',
-              layout: {
-                width: 12,
-              },
-              settings: {},
-            },
-          ],
-        },
-      },
-    },
-  ],
-};
+// const computedInitialLayout: Layout = {
+//   // TODO: remove
+//   theme: {
+//     colors: {
+//       primary: '#0074D9',
+//     },
+//     pageWidth: '1024px',
+//   },
+//   areas: {
+//     top: {
+//       layout: {
+//         width: 12,
+//       },
+//       removable: false,
+//       components: [
+//         {
+//           component: 'banner',
+//           layout: {
+//             width: 12,
+//           },
+//           settings: {},
+//         },
+//       ],
+//     },
+//     bottom: {
+//       layout: {
+//         width: 12,
+//       },
+//       removable: false,
+//       components: [],
+//     },
+//   },
+//   views: [
+//     {
+//       name: 'home',
+//       path: '/',
+//       areas: {
+//         main: {
+//           layout: {
+//             width: 12,
+//           },
+//           removable: false,
+//           components: [
+//             {
+//               component: 'banner',
+//               layout: {
+//                 width: 12,
+//               },
+//               settings: {},
+//             },
+//           ],
+//         },
+//       },
+//     },
+//     {
+//       name: 'about',
+//       path: '/',
+//       areas: {
+//         main: {
+//           layout: {
+//             width: 12,
+//           },
+//           removable: false,
+//           components: [
+//             {
+//               component: 'video',
+//               layout: {
+//                 width: 12,
+//               },
+//               settings: {},
+//             },
+//           ],
+//         },
+//       },
+//     },
+//   ],
+// };
 
 type FlatViewType = Omit<ViewType, 'areas'> & {
   areas: string[];
@@ -297,6 +297,20 @@ export class BuilderStore {
   }
 
   @action.bound
+  removeComponent(areaName: string, componentIndex: number) {
+    this.areas = {
+      ...this.areas,
+      [areaName]: {
+        ...this.areas[areaName],
+        components: [
+          ...this.areas[areaName].components.slice(0, componentIndex),
+          ...this.areas[areaName].components.slice(componentIndex + 1),
+        ],
+      },
+    };
+  }
+
+  @action.bound
   updateComponent(
     areaName: string,
     componentIndex: number,
@@ -355,30 +369,6 @@ export class BuilderStore {
       areas: this.areas,
     };
   }
-
-  // addArea() {
-  //   console.log('add area');
-  //   this.layout.views.push({
-  //     name: 'another!',
-  //     path: '/',
-  //     areas: {
-  //       main: {
-  //         layout: {
-  //           width: 12,
-  //         },
-  //         components: [
-  //           {
-  //             component: 'video',
-  //             layout: {
-  //               width: 12,
-  //             },
-  //             settings: {},
-  //           },
-  //         ],
-  //       },
-  //     },
-  //   });
-  // }
 }
 
 const store = ((window as any).builderStore = new BuilderStore());

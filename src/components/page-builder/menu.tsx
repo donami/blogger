@@ -2,6 +2,7 @@ import React from 'react';
 import { Styled } from './page-builder.styles';
 import ComponentSelector from './component-selector';
 import Icon from '../icon/icon';
+import Trash from './trash';
 
 type Props = {
   open: boolean;
@@ -26,8 +27,11 @@ const Menu: React.FC<Props> = ({ open, toggle }) => {
           </div>
 
           <Styled.BottomActions>
-            <Icon icon='save' size='2x' />
-            <span>Save</span>
+            <Trash />
+            <Styled.BottomAction>
+              <Icon icon='save' size='2x' />
+              <span>Save</span>
+            </Styled.BottomAction>
           </Styled.BottomActions>
         </Styled.MainMenu>
         {open && (
